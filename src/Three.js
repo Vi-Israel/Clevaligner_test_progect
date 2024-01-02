@@ -38,7 +38,22 @@ function Three() {
           lowJaw.scale.set(0.1,0.1,0.1);
           lowJaw.rotation.set(-3.1416/2,0,3.1416);
 
+          gui.add( lowJaw, 'visible').name('show lower Jaw')
+          gui.add( lowJaw.position, 'y', -1, 1 ).name('upper Jaw position');
+          gui.add(changeColor,'changeColor').name("change Color").onChange(()=>{
+            lowJaw.children.forEach(mesh=>{
+              if(changeColor.changeColor){
+              let clone=mesh.material.clone();
+              clone.color=new THREE.Color(Math.random(),Math.random(),Math.random());
+              mesh.material=clone;
+              }else {
+                let clone=mesh.material.clone();
+                clone.color=new THREE.Color(1,1,1);
+                mesh.material=clone;
+              }
 
+            })
+          })
 
 
         } );
