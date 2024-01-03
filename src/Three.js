@@ -53,30 +53,8 @@ function Three({fileUp,fileLow,isLoaded}) {
             gui.add(lowJaw, 'visible').name('show lower Jaw')
             gui.add(upJaw.position, 'y', -1, 1).name('upper Jaw position');
             gui.add(changeColor, 'changeColor').name("change Color").onChange(() => {
-              lowJaw.children.forEach(mesh => {
-                if (changeColor.changeColor) {
-                  let clone = mesh.material.clone();
-                  clone.color = new THREE.Color(Math.random(), Math.random(), Math.random());
-                  mesh.material = clone;
-                } else {
-                  let clone = mesh.material.clone();
-                  clone.color = new THREE.Color(1, 1, 1);
-                  mesh.material = clone;
-                }
-
-              })
-              upJaw.children.forEach(mesh => {
-                if (changeColor.changeColor) {
-                  let clone = mesh.material.clone();
-                  clone.color = new THREE.Color(Math.random(), Math.random(), Math.random());
-                  mesh.material = clone;
-                } else {
-                  let clone = mesh.material.clone();
-                  clone.color = new THREE.Color(1, 1, 1);
-                  mesh.material = clone;
-                }
-
-              })
+              changeJawColor(lowJaw);
+              changeJawColor(upJaw);
             })
 
 
@@ -97,6 +75,20 @@ function Three({fileUp,fileLow,isLoaded}) {
 
     window.addEventListener( 'resize', onWindowResize );
 
+    function changeJawColor(jaw){
+      jaw.children.forEach(mesh => {
+        if (changeColor.changeColor) {
+          let clone = mesh.material.clone();
+          clone.color = new THREE.Color(Math.random(), Math.random(), Math.random());
+          mesh.material = clone;
+        } else {
+          let clone = mesh.material.clone();
+          clone.color = new THREE.Color(1, 1, 1);
+          mesh.material = clone;
+        }
+
+      })
+    }
     function onWindowResize() {
       camera.aspect = window.innerWidth / window.innerHeight;
 
