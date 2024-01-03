@@ -51,11 +51,14 @@ function Three({fileUp,fileLow,isLoaded}) {
             lowJaw.rotation.set(-3.1416 / 2, 0, 3.1416);
 
             gui.add(lowJaw, 'visible').name('show lower Jaw')
+            gui.add(upJaw, 'visible').name('show upper Jaw')
             gui.add(upJaw.position, 'y', -1, 1).name('upper Jaw position');
             gui.add(changeColor, 'changeColor').name("change Color").onChange(() => {
               changeJawColor(lowJaw);
               changeJawColor(upJaw);
             })
+            gui.add( controls, 'enableRotate' ).name( 'Enable rotate' );
+
 
 
           });

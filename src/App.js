@@ -15,7 +15,7 @@ function App() {
         setFileLow(event.target.files[0]);
 
     };
-    const handleUpload = (event) => {
+    const handleUpload = () => {
 
         if(fileLow && fileUp){
             setIsLoaded(true)
