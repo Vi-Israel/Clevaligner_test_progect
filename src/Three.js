@@ -6,7 +6,7 @@ import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import {GUI} from "three/examples/jsm/libs/lil-gui.module.min";
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 
-function Three() {
+function Three({fileUp,fileLow}) {
   const refContainer = useRef(null);
   let upJaw, lowJaw;
   let changeColor={changeColor:false}
@@ -25,39 +25,51 @@ function Three() {
     renderer.setSize( window.innerWidth, window.innerHeight );
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1;
-    // document.body.appendChild( renderer.domElement );
-    // use ref as a mount point of the Three.js scene instead of the document.body
+
     refContainer.current && refContainer.current.appendChild( renderer.domElement );
 
-    new GLTFLoader()
-        .setPath( './LowerJaw/' )
-        .load( 'lower-jaw-vertical.glb', function ( gltf ) {
-          lowJaw=gltf.scene;
-          scene.add( lowJaw );
-          console.log(lowJaw);
-          lowJaw.scale.set(0.1,0.1,0.1);
-          lowJaw.rotation.set(-3.1416/2,0,3.1416);
+    if(fileUp){
+      const urlUp = URL.createObjectURL(fileUp);
+      console.log(urlUp);
+      new GLTFLoader().load(urlUp,function (gltf){
+        upJaw=gltf.scene;
+        scene.add(upJaw);
+        upJaw.scale.set(0.1,0.1,0.1);
+        upJaw.rotation.set(-3.14/2,3.14,3.14);
+        upJaw.position.set(0,upJawPosition,0);
 
-          gui.add( lowJaw, 'visible').name('show lower Jaw')
-          gui.add( lowJaw.position, 'y', -1, 1 ).name('upper Jaw position');
-          gui.add(changeColor,'changeColor').name("change Color").onChange(()=>{
-            lowJaw.children.forEach(mesh=>{
-              if(changeColor.changeColor){
-              let clone=mesh.material.clone();
-              clone.color=new THREE.Color(Math.random(),Math.random(),Math.random());
-              mesh.material=clone;
-              }else {
-                let clone=mesh.material.clone();
-                clone.color=new THREE.Color(1,1,1);
-                mesh.material=clone;
-              }
+      })
+    }
+    if(fileLow) {
+      const urlLow = URL.createObjectURL(fileLow);
+      new GLTFLoader()
+          .load(urlLow, function (gltf) {
+            lowJaw = gltf.scene;
+            scene.add(lowJaw);
 
+            lowJaw.scale.set(0.1, 0.1, 0.1);
+            lowJaw.rotation.set(-3.1416 / 2, 0, 3.1416);
+
+            gui.add(lowJaw, 'visible').name('show lower Jaw')
+            gui.add(lowJaw.position, 'y', -1, 1).name('upper Jaw position');
+            gui.add(changeColor, 'changeColor').name("change Color").onChange(() => {
+              lowJaw.children.forEach(mesh => {
+                if (changeColor.changeColor) {
+                  let clone = mesh.material.clone();
+                  clone.color = new THREE.Color(Math.random(), Math.random(), Math.random());
+                  mesh.material = clone;
+                } else {
+                  let clone = mesh.material.clone();
+                  clone.color = new THREE.Color(1, 1, 1);
+                  mesh.material = clone;
+                }
+
+              })
             })
-          })
 
 
-        } );
-
+          });
+    }
     const environment = new RoomEnvironment( renderer );
     const pmremGenerator = new THREE.PMREMGenerator( renderer );
 
@@ -97,7 +109,9 @@ function Three() {
 
 
     animate();
-  }, []);
+
+    return ()=>refContainer.current.removeChild( renderer.domElement);
+  }, [fileUp,fileLow]);
   return (
     <div ref={refContainer}></div>
     
