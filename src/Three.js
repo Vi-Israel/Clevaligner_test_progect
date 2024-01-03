@@ -6,7 +6,7 @@ import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import {GUI} from "three/examples/jsm/libs/lil-gui.module.min";
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 
-function Three({fileUp,fileLow}) {
+function Three({fileUp,fileLow,isLoaded}) {
   const refContainer = useRef(null);
   let upJaw, lowJaw;
   let changeColor={changeColor:false}
@@ -51,9 +51,21 @@ function Three({fileUp,fileLow}) {
             lowJaw.rotation.set(-3.1416 / 2, 0, 3.1416);
 
             gui.add(lowJaw, 'visible').name('show lower Jaw')
-            gui.add(lowJaw.position, 'y', -1, 1).name('upper Jaw position');
+            gui.add(upJaw.position, 'y', -1, 1).name('upper Jaw position');
             gui.add(changeColor, 'changeColor').name("change Color").onChange(() => {
               lowJaw.children.forEach(mesh => {
+                if (changeColor.changeColor) {
+                  let clone = mesh.material.clone();
+                  clone.color = new THREE.Color(Math.random(), Math.random(), Math.random());
+                  mesh.material = clone;
+                } else {
+                  let clone = mesh.material.clone();
+                  clone.color = new THREE.Color(1, 1, 1);
+                  mesh.material = clone;
+                }
+
+              })
+              upJaw.children.forEach(mesh => {
                 if (changeColor.changeColor) {
                   let clone = mesh.material.clone();
                   clone.color = new THREE.Color(Math.random(), Math.random(), Math.random());
@@ -111,7 +123,7 @@ function Three({fileUp,fileLow}) {
     animate();
 
     return ()=>refContainer.current.removeChild( renderer.domElement);
-  }, [fileUp,fileLow]);
+  }, [isLoaded]);
   return (
     <div ref={refContainer}></div>
     

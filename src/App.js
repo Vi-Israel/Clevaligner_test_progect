@@ -1,12 +1,12 @@
 import './App.css';
 import Three from './Three';
-import {useEffect, useState} from "react";
+import { useState} from "react";
 
 function App() {
 
     const [fileUp, setFileUp] = useState();
     const [fileLow, setFileLow] = useState();
-
+    const [isLoaded, setIsLoaded]=useState(false)
     const handleFileUpUpload = (event) => {
         setFileUp(event.target.files[0]);
 
@@ -15,18 +15,24 @@ function App() {
         setFileLow(event.target.files[0]);
 
     };
+    const handleUpload = (event) => {
+
+        if(fileLow && fileUp){
+            setIsLoaded(true)
+        }
+
+    };
 
 
 
     return (
     <div className="App">
-        <h3>Upload File</h3>
         Upload Upper Jaw:
         <input type="file" onChange={handleFileUpUpload} />
         Upload Lower Jaw:
         <input type="file" onChange={handleFileLowUpload} />
-
-      <Three fileUp={fileUp} fileLow={fileLow}/>
+        <button onClick={handleUpload}>Upload</button>
+      <Three fileUp={fileUp} fileLow={fileLow} isLoaded={isLoaded}/>
     </div>
   );
 }
